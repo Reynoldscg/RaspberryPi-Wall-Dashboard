@@ -170,7 +170,7 @@ curl https://api.dropbox.com/oauth2/token \
 1. Log in to your account
 2. Go to [API Keys](https://home.openweathermap.org/api_keys)
 3. Your default API key is already created
-4. Copy it (e.g., `370b2d13cafcdc7c43a32462ab24dc4e`)
+4. Copy it (e.g., `3123456xxxxxxxx96868768`)
 
 **Note:** New API keys take about 10-15 minutes to activate.
 
