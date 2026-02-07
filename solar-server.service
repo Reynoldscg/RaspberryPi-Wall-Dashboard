@@ -1,0 +1,16 @@
+[Unit]
+Description=Solar API Server for Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/raspberry-pi-dashboard
+ExecStart=/usr/bin/python3 /home/pi/raspberry-pi-dashboard/solar_server.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

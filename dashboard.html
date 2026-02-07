@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 25% 75%;
+      gap: 1.5vh;
+      padding: 1.5vh;
+      padding-right: 1.5vh;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5vh;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 5px;
+      padding: 1.5vh;
+      overflow-y: auto;
+    }
+
+    /* Clock and Date */
+    .clock-panel {
+      text-align: center;
+      padding: 1.5vh;
+      flex-shrink: 0;
+    }
+
+    .clock {
+      font-size: 2.5vw;
+      font-weight: bold;
+    }
+
+    /* Weather Panel */
+    .weather-panel {
+      flex: 0 0 auto;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .weather-container {
+      display: flex;
+      flex-direction: column;
+      padding: 1.5vh 1.5vw;
+      position: relative;
+    }
+
+    .weather-location-header {
+      text-align: center;
+      font-size: 1.2vw;
+      font-weight: bold;
+      margin-bottom: 1vh;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .weather-current-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .weather-current-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5vh;
+    }
+
+    .weather-icon-large {
+      font-size: 4vw;
+      line-height: 1;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    }
+
+    .weather-description {
+      font-size: 1vw;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .weather-current-right {
+      text-align: right;
+    }
+
+    .weather-temp-huge {
+      font-size: 3.5vw;
+      font-weight: bold;
+      line-height: 1;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .weather-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3vh;
+      margin-top: 0.5vh;
+      font-size: 0.8vw;
+    }
+
+    .weather-detail-row {
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    /* Solar Panel */
+    .solar-panel {
+      flex: 0 0 auto;
+      padding: 1.5vh;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 5px;
+    }
+
+    .solar-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8vh;
+    }
+
+    .solar-header {
+      text-align: center;
+      font-size: 1.2vw;
+      font-weight: bold;
+      margin-bottom: 0.5vh;
+    }
+
+    .solar-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5vh;
+    }
+
+    .solar-stat {
+      text-align: center;
+      padding: 0.5vh;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+    }
+
+    .solar-stat-label {
+      font-size: 0.7vw;
+      opacity: 0.8;
+      margin-bottom: 0.2vh;
+    }
+
+    .solar-stat-value {
+      font-size: 1.2vw;
+      font-weight: bold;
+    }
+
+    /* Photo Panel */
+    .photo-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5vh;
+      min-height: 0;
+    }
+
+    .photo-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-container img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      object-fit: contain;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    /* Calendar Panel */
+    .calendar-panel {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calendar-month {
+      text-align: center;
+      font-size: 2vw;
+      font-weight: bold;
+      margin-bottom: 2vh;
+      flex-shrink: 0;
+    }
+
+    .calendar-container {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5vh;
+      flex: 1;
+    }
+
+    .calendar-header {
+      text-align: center;
+      font-weight: bold;
+      padding: 0.3vh;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      font-size: 1vw;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .calendar-day {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 0.5vh;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calendar-day.other-month {
+      opacity: 0.5;
+    }
+
+    .calendar-day.other-month .calendar-day-number {
+      opacity: 0.6;
+    }
+
+    .calendar-day.today {
+      background: rgba(76, 175, 80, 0.3);
+      border: 2px solid #4CAF50;
+    }
+
+    .calendar-day-number {
+      font-weight: bold;
+      font-size: 1.2vw;
+      margin-bottom: 0.3vh;
+      width: 100%;
+    }
+
+    .calendar-day-events {
+      width: 100%;
+      font-size: 0.65vw;
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2vh;
+    }
+
+    .calendar-event {
+      padding: 0.2vh 0.4vh;
+      border-radius: 3px;
+      font-size: 0.6vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .calendar-event-more {
+      font-size: 0.55vw;
+      opacity: 0.7;
+      font-style: italic;
+      margin-top: 0.2vh;
+    }
+
+    /* Setup Instructions */
+    .setup-instructions {
+      text-align: center;
+      padding: 2vh;
+    }
+
+    .setup-instructions h3 {
+      margin-bottom: 2vh;
+      font-size: 1.5vw;
+    }
+
+    .setup-instructions p {
+      margin-bottom: 1vh;
+      font-size: 1vw;
+      line-height: 1.5;
+    }
+
+    .setup-instructions code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.2vh 0.5vh;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9vw;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Column -->
+    <div class="left-column">
+      <!-- Clock/Date Panel -->
+      <div class="panel clock-panel">
+        <div class="clock" id="clock"></div>
+      </div>
+
+      <!-- Weather Panel -->
+      <div class="weather-panel">
+        <div id="weather-content" class="weather-container">
+          <div class="setup-instructions">
+            <h3>⛅ Loading Weather...</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solar Panel -->
+      <div class="solar-panel" id="solar-panel" style="display: none;">
+        <div class="solar-container">
+          <div class="solar-header">☀️ Solar Production</div>
+          <div class="solar-stats">
+            <div class="solar-stat">
+              <div class="solar-stat-label">Current</div>
+              <div class="solar-stat-value" id="solar-current">-- W</div>
+            </div>
+            <div class="solar-stat">
+              <div class="solar-stat-label">Today</div>
+              <div class="solar-stat-value" id="solar-today">-- kWh</div>
+            </div>
+            <div class="solar-stat">
+              <div class="solar-stat-label">Lifetime</div>
+              <div class="solar-stat-value" id="solar-lifetime">-- kWh</div>
+            </div>
+            <div class="solar-stat">
+              <div class="solar-stat-label">Inverters</div>
+              <div class="solar-stat-value" id="solar-inverters">--</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo Panel -->
+      <div class="panel photo-panel">
+        <div class="photo-container" id="photo-container">
+          <div class="setup-instructions">
+            <h3>📸 Photo Slideshow</h3>
+            <p>Configure Dropbox to display photos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-column">
+      <!-- Calendar Panel -->
+      <div class="panel calendar-panel">
+        <div class="calendar-month" id="calendar-month"></div>
+        <div class="calendar-container">
+          <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+    const CONFIG = {
+      // Dropbox Configuration
+      DROPBOX_APP_KEY: 'your_app_key_here',
+      DROPBOX_APP_SECRET: 'your_app_secret_here',
+      DROPBOX_REFRESH_TOKEN: 'your_refresh_token_here',
+      DROPBOX_FOLDER_PATH: '/Photos/Dashboard Photos',
+
+      // Google Calendar Configuration
+      GOOGLE_CLIENT_ID: 'your_client_id.apps.googleusercontent.com',
+      GOOGLE_CLIENT_SECRET: 'GOCSPX-your_client_secret',
+      GOOGLE_REFRESH_TOKEN: 'your_refresh_token_here',
+      CALENDAR_IDS: [
+        'your_calendar@gmail.com',
+      ],
+
+      // Calendar Colors (customize per calendar)
+      CALENDAR_COLORS: {
+        'your_calendar@gmail.com': { bg: '#6AC5FE', text: '#FFFFFF' },
+      },
+
+      // Weatherbit.io Configuration
+      WEATHERBIT_API_KEY: 'your_weatherbit_api_key',
+      LATITUDE: '33.7701',
+      LONGITUDE: '-118.1937',
+
+      // OpenWeatherMap Configuration (for AQI)
+      OPENWEATHER_API_KEY: 'your_openweather_api_key',
+
+      // Solar Configuration (optional)
+      SOLAR_API_URL: 'http://localhost:8080/api/solar',
+      SOLAR_ENABLED: false,
+
+      // Display Configuration
+      PHOTO_INTERVAL: 30000, // 30 seconds per photo
+      WEATHER_REFRESH: 1800000, // 30 minutes
+      SOLAR_REFRESH: 60000, // 1 minute
+    };
+
+    // ============================================
+    // CLOCK
+    // ============================================
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('clock').textContent = timeStr;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ============================================
+    // DROPBOX PHOTOS WITH REFRESH TOKEN
+    // ============================================
+    let dropboxAccessToken = null;
+    let dropboxTokenExpiry = null;
+    let photoUrls = [];
+    let currentPhotoIndex = 0;
+
+    async function getDropboxAccessToken() {
+      if (dropboxAccessToken && dropboxTokenExpiry && Date.now() < dropboxTokenExpiry) {
+        return dropboxAccessToken;
+      }
+
+      if (!CONFIG.DROPBOX_REFRESH_TOKEN || !CONFIG.DROPBOX_APP_KEY || !CONFIG.DROPBOX_APP_SECRET) {
+        console.log('⚠️ Dropbox not configured');
+        return null;
+      }
+
+      try {
+        const response = await fetch('https://api.dropbox.com/oauth2/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            grant_type: 'refresh_token',
+            refresh_token: CONFIG.DROPBOX_REFRESH_TOKEN,
+            client_id: CONFIG.DROPBOX_APP_KEY,
+            client_secret: CONFIG.DROPBOX_APP_SECRET,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.access_token) {
+          dropboxAccessToken = data.access_token;
+          dropboxTokenExpiry = Date.now() + ((data.expires_in || 14400) * 1000) - (5 * 60 * 1000);
+          console.log('✅ Dropbox access token refreshed');
+          return dropboxAccessToken;
+        } else {
+          throw new Error('Failed to refresh token: ' + JSON.stringify(data));
+        }
+      } catch (error) {
+        console.error('❌ Dropbox token refresh error:', error);
+        return null;
+      }
+    }
+
+    async function loadDropboxPhotos() {
+      const token = await getDropboxAccessToken();
+      if (!token) {
+        console.log('⚠️ No Dropbox access token available');
+        return;
+      }
+
+      try {
+        const response = await fetch('https://api.dropboxapi.com/2/files/list_folder', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            path: CONFIG.DROPBOX_FOLDER_PATH || '',
+            recursive: true,
+            include_deleted: false,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.entries) {
+          const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.heic', '.webp'];
+          const imageFiles = data.entries.filter(entry =>
+            entry['.tag'] === 'file' &&
+            imageExtensions.some(ext => entry.name.toLowerCase().endsWith(ext))
+          );
+
+          console.log(`📸 Found ${imageFiles.length} photos in Dropbox`);
+
+          photoUrls = [];
+          for (const file of imageFiles) {
+            const linkResponse = await fetch('https://api.dropboxapi.com/2/files/get_temporary_link', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ path: file.path_lower }),
+            });
+
+            const linkData = await linkResponse.json();
+            if (linkData.link) {
+              photoUrls.push(linkData.link);
+            }
+          }
+
+          if (photoUrls.length > 0) {
+            console.log(`✅ Loaded ${photoUrls.length} photo URLs from Dropbox`);
+            currentPhotoIndex = 0;
+            showNextPhoto();
+          }
+        }
+      } catch (error) {
+        console.error('❌ Dropbox photos error:', error);
+      }
+    }
+
+    function showNextPhoto() {
+      if (photoUrls.length === 0) return;
+
+      const container = document.getElementById('photo-container');
+      const img = document.createElement('img');
+
+      img.src = photoUrls[currentPhotoIndex];
+      img.style.opacity = '0';
+      img.style.transition = 'opacity 1s ease-in-out';
+
+      img.onload = () => {
+        const oldImages = container.querySelectorAll('img');
+        oldImages.forEach(oldImg => {
+          oldImg.style.opacity = '0';
+          setTimeout(() => oldImg.remove(), 1000);
+        });
+
+        container.appendChild(img);
+        setTimeout(() => img.style.opacity = '1', 50);
+      };
+
+      currentPhotoIndex = (currentPhotoIndex + 1) % photoUrls.length;
+    }
+
+    if (CONFIG.DROPBOX_REFRESH_TOKEN) {
+      loadDropboxPhotos();
+      setInterval(showNextPhoto, CONFIG.PHOTO_INTERVAL);
+      setInterval(loadDropboxPhotos, 6 * 60 * 60 * 1000);
+    }
+
+    // ============================================
+    // GOOGLE CALENDAR
+    // ============================================
+    let calendarEvents = [];
+
+    async function refreshAccessToken() {
+      if (!CONFIG.GOOGLE_REFRESH_TOKEN || !CONFIG.GOOGLE_CLIENT_ID || !CONFIG.GOOGLE_CLIENT_SECRET) {
+        return null;
+      }
+
+      try {
+        const response = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            client_id: CONFIG.GOOGLE_CLIENT_ID,
+            client_secret: CONFIG.GOOGLE_CLIENT_SECRET,
+            refresh_token: CONFIG.GOOGLE_REFRESH_TOKEN,
+            grant_type: 'refresh_token',
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.access_token) {
+          return data.access_token;
+        } else {
+          console.error('Token refresh failed:', data);
+          return null;
+        }
+      } catch (error) {
+        console.error('Token refresh error:', error);
+        return null;
+      }
+    }
+
+    function generateCalendar() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+
+      document.getElementById('calendar-month').textContent = `${monthNames[month]} ${year}`;
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDayOfWeek = firstDay.getDay();
+
+      const grid = document.getElementById('calendar-grid');
+      grid.innerHTML = '';
+
+      const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      dayHeaders.forEach(day => {
+        const header = document.createElement('div');
+        header.className = 'calendar-header';
+        header.textContent = day;
+        grid.appendChild(header);
+      });
+
+      const prevMonthLastDay = new Date(year, month, 0).getDate();
+      for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+        const dayNum = prevMonthLastDay - i;
+        const prevMonthDate = new Date(year, month - 1, dayNum);
+        grid.appendChild(createDayElement(dayNum, prevMonthDate, true));
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const currentDate = new Date(year, month, day);
+        grid.appendChild(createDayElement(day, currentDate, false));
+      }
+
+      const remainingCells = 42 - (startingDayOfWeek + daysInMonth);
+      for (let day = 1; day <= remainingCells; day++) {
+        const nextMonthDate = new Date(year, month + 1, day);
+        grid.appendChild(createDayElement(day, nextMonthDate, true));
+      }
+    }
+
+    function createDayElement(dayNum, date, isOtherMonth) {
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'calendar-day';
+
+      if (isOtherMonth) {
+        dayDiv.classList.add('other-month');
+      }
+
+      const today = new Date();
+      if (date.toDateString() === today.toDateString()) {
+        dayDiv.classList.add('today');
+      }
+
+      const dayNumber = document.createElement('div');
+      dayNumber.className = 'calendar-day-number';
+      dayNumber.textContent = dayNum;
+      dayDiv.appendChild(dayNumber);
+
+      const dayEvents = getEventsForDate(date);
+
+      if (dayEvents.length > 0) {
+        const eventsContainer = document.createElement('div');
+        eventsContainer.className = 'calendar-day-events';
+
+        dayEvents.slice(0, 4).forEach(event => {
+          const eventItem = document.createElement('div');
+          eventItem.className = 'calendar-event';
+
+          const calendarId = event.calendarId;
+          if (CONFIG.CALENDAR_COLORS[calendarId]) {
+            const colors = CONFIG.CALENDAR_COLORS[calendarId];
+            eventItem.style.backgroundColor = colors.bg;
+            eventItem.style.color = colors.text;
+          } else {
+            eventItem.style.backgroundColor = 'rgba(100, 149, 237, 0.6)';
+            eventItem.style.color = '#FFFFFF';
+          }
+
+          let eventText;
+          if (event.start.dateTime) {
+            const eventStart = new Date(event.start.dateTime);
+            const timeStr = eventStart.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            });
+            eventText = `${timeStr} ${event.summary || 'Untitled'}`;
+          } else {
+            eventText = event.summary || 'Untitled';
+          }
+
+          eventItem.textContent = eventText;
+          eventItem.title = eventText;
+          eventsContainer.appendChild(eventItem);
+        });
+
+        if (dayEvents.length > 4) {
+          const moreText = document.createElement('div');
+          moreText.className = 'calendar-event-more';
+          moreText.textContent = `+${dayEvents.length - 4} more`;
+          eventsContainer.appendChild(moreText);
+        }
+
+        dayDiv.appendChild(eventsContainer);
+      }
+
+      return dayDiv;
+    }
+
+    function getEventsForDate(date) {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const day = date.getDate();
+      const checkDate = new Date(year, month, day);
+
+      return calendarEvents.filter(event => {
+        let eventStartDate;
+        if (event.start.dateTime) {
+          eventStartDate = new Date(event.start.dateTime);
+        } else {
+          const [y, m, d] = event.start.date.split('-').map(Number);
+          eventStartDate = new Date(y, m - 1, d);
+        }
+
+        let eventEndDate;
+        if (event.end.dateTime) {
+          eventEndDate = new Date(event.end.dateTime);
+        } else {
+          const [y, m, d] = event.end.date.split('-').map(Number);
+          eventEndDate = new Date(y, m - 1, d);
+          eventEndDate.setDate(eventEndDate.getDate() - 1);
+        }
+
+        checkDate.setHours(0, 0, 0, 0);
+        eventStartDate.setHours(0, 0, 0, 0);
+        eventEndDate.setHours(0, 0, 0, 0);
+
+        return checkDate >= eventStartDate && checkDate <= eventEndDate;
+      });
+    }
+
+    async function loadCalendarEvents() {
+      if (!CONFIG.GOOGLE_REFRESH_TOKEN || CONFIG.CALENDAR_IDS.length === 0) {
+        generateCalendar();
+        return;
+      }
+
+      try {
+        calendarEvents = [];
+        const accessToken = await refreshAccessToken();
+
+        if (!accessToken) {
+          throw new Error('Could not get access token');
+        }
+
+        const now = new Date();
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 2, 0, 23, 59, 59);
+
+        const timeMin = firstDayOfMonth.toISOString();
+        const timeMax = lastDayOfMonth.toISOString();
+
+        for (const calId of CONFIG.CALENDAR_IDS) {
+          const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`;
+
+          const response = await fetch(url, {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+
+          const data = await response.json();
+
+          if (data.items) {
+            calendarEvents.push(...data.items.map(event => ({
+              ...event,
+              calendarName: data.summary || 'Calendar',
+              calendarId: calId
+            })));
+          }
+        }
+
+        console.log(`✅ Loaded ${calendarEvents.length} calendar events`);
+        generateCalendar();
+      } catch (error) {
+        console.error('Calendar error:', error);
+        generateCalendar();
+      }
+    }
+
+    loadCalendarEvents();
+    setInterval(loadCalendarEvents, 5 * 60 * 1000);
+
+    // ============================================
+    // WEATHERBIT.IO WEATHER
+    // ============================================
+
+    async function loadWeather() {
+      if (!CONFIG.WEATHERBIT_API_KEY || !CONFIG.LATITUDE || !CONFIG.LONGITUDE) {
+        return;
+      }
+
+      const container = document.getElementById('weather-content');
+
+      try {
+        const forecastUrl = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${CONFIG.LATITUDE}&lon=${CONFIG.LONGITUDE}&key=${CONFIG.WEATHERBIT_API_KEY}&days=7&units=I`;
+        const aqiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${CONFIG.LATITUDE}&lon=${CONFIG.LONGITUDE}&appid=${CONFIG.OPENWEATHER_API_KEY}`;
+
+        const [weatherResponse, aqiResponse] = await Promise.all([
+          fetch(forecastUrl),
+          fetch(aqiUrl)
+        ]);
+
+        const data = await weatherResponse.json();
+        const aqiData = await aqiResponse.json();
+
+        let aqi = 'N/A';
+        let aqiDescription = '';
+
+        if (aqiData.list && aqiData.list[0] && aqiData.list[0].components) {
+          const pm25 = aqiData.list[0].components.pm2_5;
+
+          if (pm25 !== undefined) {
+            const breakpoints = [
+              { cLow: 0.0, cHigh: 12.0, iLow: 0, iHigh: 50, category: 'Good' },
+              { cLow: 12.1, cHigh: 35.4, iLow: 51, iHigh: 100, category: 'Moderate' },
+              { cLow: 35.5, cHigh: 55.4, iLow: 101, iHigh: 150, category: 'Unhealthy for Sensitive' },
+              { cLow: 55.5, cHigh: 150.4, iLow: 151, iHigh: 200, category: 'Unhealthy' },
+              { cLow: 150.5, cHigh: 250.4, iLow: 201, iHigh: 300, category: 'Very Unhealthy' },
+              { cLow: 250.5, cHigh: 500.4, iLow: 301, iHigh: 500, category: 'Hazardous' }
+            ];
+
+            let calculatedAQI = 0;
+            for (let bp of breakpoints) {
+              if (pm25 >= bp.cLow && pm25 <= bp.cHigh) {
+                calculatedAQI = ((bp.iHigh - bp.iLow) / (bp.cHigh - bp.cLow)) * (pm25 - bp.cLow) + bp.iLow;
+                aqiDescription = bp.category;
+                break;
+              }
+            }
+
+            if (pm25 > 500.4) {
+              calculatedAQI = 500;
+              aqiDescription = 'Hazardous';
+            }
+
+            aqi = Math.round(calculatedAQI);
+          }
+        }
+
+        if (!data.data || data.data.length === 0) {
+          throw new Error('No weather data received');
+        }
+
+        const today = data.data[0];
+        const cityName = data.city_name;
+        const stateName = data.state_code;
+        const country = data.country_code;
+
+        const windMph = Math.round(today.wind_spd * 2.237);
+
+        const sunrise = today.sunrise_ts ? new Date(today.sunrise_ts * 1000) : null;
+        const sunset = today.sunset_ts ? new Date(today.sunset_ts * 1000) : null;
+
+        const now = new Date();
+        const currentHour = now.getHours();
+        let sunTimeLabel, sunTimeValue;
+
+        if (currentHour < 12) {
+          sunTimeLabel = 'Sunrise';
+          sunTimeValue = sunrise ? sunrise.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : 'N/A';
+        } else {
+          sunTimeLabel = 'Sunset';
+          sunTimeValue = sunset ? sunset.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : 'N/A';
+        }
+
+        const weatherIcons = {
+          't01d': '⛈️', 't01n': '⛈️', 't02d': '⛈️', 't02n': '⛈️',
+          't03d': '⛈️', 't03n': '⛈️', 't04d': '⛈️', 't04n': '⛈️',
+          't05d': '⛈️', 't05n': '⛈️', 'd01d': '🌧️', 'd01n': '🌧️',
+          'd02d': '🌧️', 'd02n': '🌧️', 'd03d': '🌧️', 'd03n': '🌧️',
+          'r01d': '🌧️', 'r01n': '🌧️', 'r02d': '🌧️', 'r02n': '🌧️',
+          'r03d': '🌧️', 'r03n': '🌧️', 'r04d': '🌧️', 'r04n': '🌧️',
+          'r05d': '🌧️', 'r05n': '🌧️', 'r06d': '🌧️', 'r06n': '🌧️',
+          's01d': '❄️', 's01n': '❄️', 's02d': '❄️', 's02n': '❄️',
+          's03d': '❄️', 's03n': '❄️', 's04d': '❄️', 's04n': '❄️',
+          's05d': '❄️', 's05n': '❄️', 's06d': '❄️', 's06n': '❄️',
+          'a01d': '🌫️', 'a01n': '🌫️', 'a02d': '🌫️', 'a02n': '🌫️',
+          'a03d': '🌫️', 'a03n': '🌫️', 'a04d': '🌫️', 'a04n': '🌫️',
+          'a05d': '🌫️', 'a05n': '🌫️', 'a06d': '🌫️', 'a06n': '🌫️',
+          'c01d': '☀️', 'c01n': '🌙', 'c02d': '⛅', 'c02n': '☁️',
+          'c03d': '☁️', 'c03n': '☁️', 'c04d': '☁️', 'c04n': '☁️',
+          'u00d': '🌧️', 'u00n': '🌧️',
+        };
+
+        const currentIcon = weatherIcons[today.weather.icon] || '🌤️';
+
+        const aqiDisplay = aqi;
+
+        container.innerHTML = `
+          <div class="weather-location-header">${cityName}, ${stateName}, ${country}</div>
+          <div class="weather-current-section">
+            <div class="weather-current-left">
+              <div class="weather-icon-large">${currentIcon}</div>
+              <div class="weather-description">${today.weather.description}</div>
+            </div>
+            <div class="weather-current-right">
+              <div class="weather-temp-huge">${Math.round(today.temp)}°F</div>
+              <div class="weather-details">
+                <div class="weather-detail-row">AQI: ${aqiDisplay}</div>
+                <div class="weather-detail-row">Wind: ${windMph} mph</div>
+                <div class="weather-detail-row">${sunTimeLabel}: ${sunTimeValue}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        container.innerHTML = `
+          <div class="setup-instructions">
+            <h3>⚠️ Weather Error</h3>
+            <p>${error.message}</p>
+            <p style="margin-top: 1vh; font-size: 0.9vw;">Check console for details</p>
+          </div>
+        `;
+        console.error('Weather error details:', error);
+      }
+    }
+
+    loadWeather();
+    setInterval(loadWeather, CONFIG.WEATHER_REFRESH);
+
+    // ============================================
+    // SOLAR PRODUCTION (OPTIONAL)
+    // ============================================
+
+    async function loadSolarData() {
+      if (!CONFIG.SOLAR_ENABLED || !CONFIG.SOLAR_API_URL) {
+        return;
+      }
+
+      try {
+        const response = await fetch(CONFIG.SOLAR_API_URL);
+        const data = await response.json();
+
+        if (data.current_power_w !== undefined) {
+          document.getElementById('solar-panel').style.display = 'block';
+          document.getElementById('solar-current').textContent = `${data.current_power_w.toLocaleString()} W`;
+          document.getElementById('solar-today').textContent = `${data.today_kwh.toFixed(2)} kWh`;
+          document.getElementById('solar-lifetime').textContent = `${data.lifetime_kwh.toLocaleString()} kWh`;
+          document.getElementById('solar-inverters').textContent = `${data.inverters_online || data.inverter_count}/${data.inverter_count}`;
+        }
+      } catch (error) {
+        console.error('Solar data error:', error);
+      }
+    }
+
+    if (CONFIG.SOLAR_ENABLED) {
+      loadSolarData();
+      setInterval(loadSolarData, CONFIG.SOLAR_REFRESH);
+    }
+  </script>
+</body>
+</html>
